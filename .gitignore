@@ -1,5 +1,5 @@
 .venv/
 project/api/keys.py
 project/db.sqlite3
-project/api/_cache/
-project/_cache/
+project/api/.cache/
+project/.cache/
