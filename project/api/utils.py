@@ -11,7 +11,7 @@ import re
 import random
 import string
 
-from keys import *
+from .keys import *
 
 genius = Genius(SPOTIFY_CLIENT_ID)
 client_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SERVER)
