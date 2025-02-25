@@ -1,3 +1,4 @@
+from rest_framework.pagination import CursorPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -31,10 +32,10 @@ class FindAddTrackLyrics(APIView):
 
         try:
             track_name, artist_name, cover_url = get_track_info(track_url)
-            lyrics = get_song_lyrics(track_name, artist_name)
+            lyrics = get_lyrics(track_name, artist_name)
             track_id = generate_track_id()
             if not lyrics:
-                return Response({'is_added': False, 'message': 'Could not find song lyrics'},
+                return Response({'is_added': False, 'message': f'Couldnt find song lyrics ({track_name}, {artist_name}, {lyrics[1]})'},
                                 status=status.HTTP_404_NOT_FOUND)
             is_added = save_user_track_lyrics(username, track_id, artist_name, track_name, cover_url, lyrics)
             if is_added:
@@ -66,15 +67,27 @@ class RecentTracks(APIView):
             return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class TrackCursorPagination(CursorPagination):
+    page_size = 20
+    ordering = 'added_date'
+    cursor_query_param = 'cursor'
+
+
 class AllTracks(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = TrackCursorPagination
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         username = request.user.username
         tracks = get_all_tracks(username)
-        serializer = TrackSerializer(tracks, many=True)
-        return Response({'all_tracks': serializer.data}, status=status.HTTP_200_OK)
+
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(tracks, request, view=self)
+
+        serializer = TrackSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
 
 class TrackLyrics(APIView):

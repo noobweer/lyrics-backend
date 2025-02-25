@@ -1,3 +1,4 @@
+import requests
 from lyricsgenius import Genius
 from .models import AppUsers, UsersTracks
 import spotipy
@@ -10,10 +11,8 @@ from django.db.models import Q
 import re
 import random
 import string
-
 from .keys import *
 
-genius = Genius(SPOTIFY_CLIENT_ID)
 client_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SERVER)
 sp = spotipy.Spotify(client_credentials_manager=client_manager)
 client = Client().init()
@@ -57,14 +56,16 @@ def get_yandex_track_info(track_url):
     return track_name, artists, album_cover
 
 
-def get_song_lyrics(track, artist):
+def get_lyrics(track, artist):
     try:
-        lyrics = genius.search_song(track, artist).lyrics
-        return lyrics
-    except:
-        print(f"Lyrics not found")
-        return False
+        url = "https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"
 
+        querystring = {'apikey': MUSIXMATCH_KEY, 'q_track': track, 'q_artist': artist}
+        response = requests.request("GET", url, params=querystring).json()
+        lyrics = response['message']['body']['lyrics']['lyrics_body']
+        return lyrics
+    except Exception as e:
+        return False
 
 def generate_track_id():
     characters = string.ascii_lowercase + string.digits
