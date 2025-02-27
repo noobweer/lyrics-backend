@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import *
 
 urlpatterns = [
-    path('find-add-track-lyrics/', FindAddTrackLyrics.as_view(), name='find_add_track_lyrics'),
+    path('add-track/', AddTrack.as_view(), name='find_add_track_lyrics'),
     path('recent-tracks/', RecentTracks.as_view(), name='recent_tracks'),
     path('all-tracks/', AllTracks.as_view(), name='all_tracks'),
     path('track-lyrics/', TrackLyrics.as_view(), name='track-lyrics'),

@@ -23,6 +23,13 @@ class TrackSerializer(serializers.Serializer):
     added_date = serializers.DateTimeField()
 
 
+class SearchSerializer(serializers.Serializer):
+    track_id = serializers.CharField()
+    artist = serializers.CharField()
+    track_title = serializers.CharField()
+    cover_url = serializers.URLField()
+
+
 class LyricsSerializer(serializers.Serializer):
     artist = serializers.CharField()
     track_title = serializers.CharField()
@@ -30,7 +37,7 @@ class LyricsSerializer(serializers.Serializer):
     lyrics = serializers.CharField()
 
 
-class ProfileInfoSerializer(serializers.Serializer):
+class ProfileSerializer(serializers.Serializer):
     username = serializers.CharField()
     name = serializers.CharField()
     tracks_count = serializers.IntegerField()

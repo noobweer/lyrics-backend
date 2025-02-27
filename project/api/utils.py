@@ -1,7 +1,6 @@
-import requests
-from lyricsgenius import Genius
 from .models import AppUsers, UsersTracks
 import spotipy
+import requests
 from yandex_music import Client
 from spotipy.oauth2 import SpotifyClientCredentials
 from django.core.exceptions import ObjectDoesNotExist
@@ -28,13 +27,13 @@ def is_valid_yandex_track_url(url):
     return re.match(pattern, url) is not None
 
 
-def get_track_info(track_url):
-    if is_valid_spotify_track_url(track_url):
-        return get_spotify_track_info(track_url)
-    elif is_valid_yandex_track_url(track_url):
-        return get_yandex_track_info(track_url)
-    else:
-        raise ValueError("Invalid track URL")
+# def get_track_info(track_url):
+#     if is_valid_spotify_track_url(track_url):
+#         return get_spotify_track_info(track_url)
+#     elif is_valid_yandex_track_url(track_url):
+#         return get_yandex_track_info(track_url)
+#     else:
+#         raise ValueError("Invalid track URL")
 
 
 def get_spotify_track_info(track_url):
@@ -67,15 +66,16 @@ def get_lyrics(track, artist):
     except Exception as e:
         return False
 
-def generate_track_id():
-    characters = string.ascii_lowercase + string.digits
-    while True:
-        track_id = ''.join(random.choice(characters) for _ in range(6))
-        try:
-            if not UsersTracks.objects.filter(track_id=track_id).exists():
-                return track_id
-        except IntegrityError:
-            continue
+
+# def generate_track_id():
+#     characters = string.ascii_lowercase + string.digits
+#     while True:
+#         track_id = ''.join(random.choice(characters) for _ in range(6))
+#         try:
+#             if not UsersTracks.objects.filter(track_id=track_id).exists():
+#                 return track_id
+#         except IntegrityError:
+#             continue
 
 
 def save_user_track_lyrics(username, track_id, artist, track, cover_url, lyrics):
